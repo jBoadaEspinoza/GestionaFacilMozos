@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_room">
+
+    <fragment
+        android:id="@+id/navigation_room"
+        android:name="com.gestionafacilmozos.ui.room.RoomFragment"
+        android:label="@string/title_room"
+        tools:layout="@layout/fragment_room" >
+        <action
+            android:id="@+id/action_navigation_room_to_ordenTicketFragment"
+            app:destination="@id/navigation_order_ticket" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_history"
+        android:name="com.gestionafacilmozos.ui.history.HistoryFragment"
+        android:label="@string/title_history"
+        tools:layout="@layout/fragment_history" />
+
+    <fragment
+        android:id="@+id/navigation_explore"
+        android:name="com.gestionafacilmozos.ui.explore.ExploreFragment"
+        android:label="@string/title_explore"
+        tools:layout="@layout/fragment_explore" />
+
+    <fragment
+        android:id="@+id/navigation_order_ticket"
+        android:name="com.gestionafacilmozos.ui.room.OrdenTicketFragment"
+        android:label="@string/title_order_ticket"
+        tools:layout="@layout/fragment_orden_ticket" />
+</navigation>

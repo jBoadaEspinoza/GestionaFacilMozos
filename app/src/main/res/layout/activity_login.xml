@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LoginActivity">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:ignore="MissingConstraints">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:gravity="center_vertical|center_horizontal"
+            android:background="@drawable/bg1"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-50dp"
+                android:gravity="center_vertical|center_horizontal"
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:src="@drawable/logo" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/quicksand_bold"
+                    android:text="GestionaFacil"
+                    android:textSize="35dp"
+                    android:textColor="@color/white" />
+            </LinearLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginTop="35dp"
+            android:layout_marginLeft="55dp"
+            android:layout_marginRight="55dp"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Iniciar sesión"
+                android:textSize="25dp"
+                android:layout_marginBottom="20dp"
+                android:textColor="@color/crimson_500"
+                android:fontFamily="@font/quicksand_bold" />
+            <EditText
+                android:id="@+id/txtRuc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16dp"
+                android:fontFamily="@font/quicksand_regular"
+                android:drawableLeft="@drawable/baseline_home_work_24"
+                android:textColorHint="@color/gray_200"
+                android:inputType="number"/>
+            <EditText
+                android:id="@+id/txtUserName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/gray_200"
+                android:textSize="16dp"
+                android:fontFamily="@font/quicksand_regular"
+                android:drawableLeft="@drawable/baseline_person_2_24"
+                android:hint="   Nombre de usuaio" />
+            <EditText
+                android:id="@+id/txtPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/gray_200"
+                android:drawableLeft="@drawable/baseline_key_24"
+                android:hint="   Contraseña"
+                android:textSize="16dp"
+                android:fontFamily="@font/quicksand_regular"
+                android:inputType="text" />
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnEnter"
+                android:layout_marginTop="25dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Entrar"
+                android:textColor="@color/white"
+                android:background="@drawable/button_background" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="55dp"
+            android:layout_marginRight="55dp"
+            android:layout_marginBottom="5dp"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Toma de Pedidos"
+                android:textColor="@color/gray_dark"
+                android:layout_gravity="center"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                android:fontFamily="@font/quicksand_bold"
+                android:layout_marginBottom="10dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:text="Powered By Maabi Software Solutions"
+                android:textSize="14dp"
+                android:textAlignment="center"
+                android:textColor="@color/gray_dark"
+                android:layout_gravity="center"
+                android:textStyle="normal"
+                android:fontFamily="@font/quicksand_bold" />
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

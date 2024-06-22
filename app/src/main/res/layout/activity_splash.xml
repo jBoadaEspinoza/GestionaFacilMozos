@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".SplashActivity">
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:layout_weight="1">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+            <ImageView
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:src="@drawable/logo" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/quicksand_bold"
+                android:text="GestionaFacil"
+                android:textSize="35dp"
+                android:textColor="@color/white" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_gravity="center_horizontal"
+                android:orientation="horizontal">
+                <ImageView
+                    android:id="@+id/circle1"
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:src="@drawable/circle_off"
+                    android:layout_marginRight="6dp"/>
+
+                <ImageView
+                    android:id="@+id/circle2"
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:src="@drawable/circle_off"
+                    android:layout_marginRight="6dp"/>
+
+                <ImageView
+                    android:id="@+id/circle3"
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:src="@drawable/circle_off"
+                    android:layout_marginRight="6dp"/>
+
+                <ImageView
+                    android:id="@+id/circle4"
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:src="@drawable/circle_off"
+                    android:layout_marginRight="6dp"/>
+
+                <ImageView
+                    android:id="@+id/circle5"
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:src="@drawable/circle_off"
+                    android:layout_marginRight="6dp"/>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Powered By"
+        android:textColor="@color/white"
+        android:layout_gravity="center"
+        android:textStyle="bold"
+        android:fontFamily="@font/quicksand_bold"
+        android:layout_marginBottom="2dp" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/app_business"
+        android:textColor="@color/white"
+        android:layout_gravity="center"
+        android:textStyle="bold"
+        android:fontFamily="@font/quicksand_bold" />
+</LinearLayout>

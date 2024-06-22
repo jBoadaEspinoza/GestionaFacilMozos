@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">GestionaFacil-Mozos</string>
+    <string name="app_business">Maabi Software Solutions</string>
+
+    <string name="title_room">Salon</string>
+    <string name="title_history">Historial</string>
+    <string name="title_explore">Explorar</string>
+    <string name="title_order_ticket">Comanda</string>
+
+    <string name="login_ruc">RUC del establecimiento</string>
+    <string name="login_username">Nombre de usuario</string>
+    <string name="login_password">Contraseña</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

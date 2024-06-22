@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="crimson_200">#F61B47</color>
+    <color name="crimson_500">#E91842</color>
+    <color name="crimson_700">#F61B47</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="gray_light_200">#FDFEFE</color>
+    <color name="gray_700">#757575</color>
+    <color name="gray_500">#EBEBEB</color>
+    <color name="gray_200">#B0BEC5</color>
+    <color name="gray_dark">#616161</color>
+</resources>

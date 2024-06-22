@@ -1,0 +1,5 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <solid android:color="@color/crimson_700"/> <!-- Color del estado presionado -->
+    <size android:width="50dp" android:height="50dp"/> <!-- Tamaño del círculo -->
+</shape>
