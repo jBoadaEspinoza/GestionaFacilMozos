@@ -18,5 +18,6 @@ public class Order {
     @SerializedName("closing_date")
     private String closingDate;
     private boolean closing;
+    @SerializedName("order_detail")
     private List<OrderDetail> details;
 }

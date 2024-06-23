@@ -1,5 +1,7 @@
 package com.gestionafacilmozos.api.models;
 
+import com.google.gson.annotations.SerializedName;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,4 +11,22 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MenuItem {
     private String id;
+    private String denomination;
+
+    @SerializedName("category_id")
+    private String categoryId;
+
+    @SerializedName("presentation_id")
+    private String presentationId;
+
+    @SerializedName("dispatch_area_id")
+    private String dispatchAreaId;
+
+    @SerializedName("image_url")
+    private String imageUrl;
+
+    @SerializedName("price_pen")
+    private double pricePen;
+
+    private boolean active;
 }

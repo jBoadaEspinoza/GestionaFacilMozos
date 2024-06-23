@@ -11,8 +11,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class OrderDetail {
     private String id;
-    @SerializedName("menu_item_id")
-    private String menuItemId;
+
+    @SerializedName("menu_item")
+    private MenuItem menuItem;
+
     private int quantity;
     @SerializedName("unit_price")
     private double unitPrice;

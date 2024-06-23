@@ -29,7 +29,12 @@
 
     <fragment
         android:id="@+id/navigation_order_ticket"
-        android:name="com.gestionafacilmozos.ui.room.OrdenTicketFragment"
+        android:name="com.gestionafacilmozos.ui.room.OrderTicketFragment"
         android:label="@string/title_order_ticket"
-        tools:layout="@layout/fragment_orden_ticket" />
+        tools:layout="@layout/fragment_order_ticket" />
+    <fragment
+        android:id="@+id/menuItemsFragment"
+        android:name="com.gestionafacilmozos.ui.room.MenuItemsFragment"
+        android:label="fragment_menu_items"
+        tools:layout="@layout/fragment_menu_items" />
 </navigation>

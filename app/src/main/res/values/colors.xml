@@ -12,4 +12,5 @@
     <color name="gray_500">#EBEBEB</color>
     <color name="gray_200">#B0BEC5</color>
     <color name="gray_dark">#616161</color>
+    <color name="loading">#C8C8C9</color>
 </resources>

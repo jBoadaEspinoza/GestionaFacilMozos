@@ -32,6 +32,7 @@ public class OrderRepository {
                         boolean success=result.getBoolean("success");
                         if(success){
                             String data=result.getString("data");
+
                             Order order=new Gson().fromJson(data,Order.class);
                             callback.onSuccess(order);
                         }else{
