@@ -2,6 +2,11 @@
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item
+        android:id="@+id/action_send_order"
+        android:icon="@drawable/baseline_send_24"
+        android:title="Enviar ordenes a area de despacho"
+        app:showAsAction="always" />
+    <item
         android:id="@+id/action_add"
         android:icon="@drawable/baseline_add_circle_outline_24"
         android:title="Agregar menu item"

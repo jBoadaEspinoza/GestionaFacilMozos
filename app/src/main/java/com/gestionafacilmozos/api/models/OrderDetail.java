@@ -18,4 +18,7 @@ public class OrderDetail {
     private int quantity;
     @SerializedName("unit_price")
     private double unitPrice;
+
+    @SerializedName("quantity_received_for_dispatch_area")
+    private int quantityReceivedForDispatchArea;
 }

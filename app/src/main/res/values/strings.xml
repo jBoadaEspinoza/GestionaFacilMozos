@@ -6,6 +6,7 @@
     <string name="title_history">Historial</string>
     <string name="title_explore">Explorar</string>
     <string name="title_order_ticket">Comanda</string>
+    <string name="title_buscar_menu_items">Menu items</string>
 
     <string name="login_ruc">RUC del establecimiento</string>
     <string name="login_username">Nombre de usuario</string>

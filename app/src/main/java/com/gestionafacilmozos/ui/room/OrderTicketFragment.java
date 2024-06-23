@@ -63,7 +63,7 @@ public class OrderTicketFragment extends Fragment {
             @Override
             public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
                 if (menuItem.getItemId() == R.id.action_add) {
-                    //Navigation.findNavController(view).navigate(R.id.action_manifiestFragment_to_newmanifiestFragment);
+                    Navigation.findNavController(view).navigate(R.id.action_navigation_order_ticket_to_menuItemsFragment);
                     return true;
                 }
                 return false;
