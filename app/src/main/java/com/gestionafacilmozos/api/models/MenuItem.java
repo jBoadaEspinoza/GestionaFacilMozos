@@ -13,14 +13,14 @@ public class MenuItem {
     private String id;
     private String denomination;
 
-    @SerializedName("category_id")
-    private String categoryId;
+    @SerializedName("category")
+    private Category category;
 
-    @SerializedName("presentation_id")
-    private String presentationId;
+    @SerializedName("presentation")
+    private Presentation presentation;
 
-    @SerializedName("dispatch_area_id")
-    private String dispatchAreaId;
+    @SerializedName("dispatch_area")
+    private DispatchArea dispatchArea;
 
     @SerializedName("image_url")
     private String imageUrl;

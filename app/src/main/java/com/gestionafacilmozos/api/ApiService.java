@@ -22,4 +22,7 @@ public interface ApiService {
 
     @GET("orders/{id}")
     Call<Result> getOrderById(@Header("Authorization") String token, @Path("id") String id);
+
+    @GET("menu-items")
+    Call<Result> getMenuItems(@Header("Authorization") String token, @Query("limit") int limit,@Query("skip") int skip,@Query("sort") String sort,@Query("denomination") String denomination);
 }

@@ -5,8 +5,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -44,6 +46,7 @@ public class OrderDetailAdapter extends RecyclerView.Adapter<OrderDetailAdapter.
         OrderDetail orderDetail=orderDetailList.get(position);
 
         MenuItem menuItem=orderDetail.getMenuItem();
+        holder.binding.txtCategory.setText(menuItem.getCategory().getDenominationPerGroup().toUpperCase());
         holder.binding.txtMenuItemDenomination.setText(menuItem.getDenomination());
         if(menuItem.getImageUrl()!=null){
             Glide.with(context)
@@ -56,8 +59,48 @@ public class OrderDetailAdapter extends RecyclerView.Adapter<OrderDetailAdapter.
         double total=orderDetail.getQuantity()*orderDetail.getUnitPrice();
         String formattedTotal = String.format(Locale.getDefault(), "%.2f", total);
         holder.binding.txtUnitPrice.setText("S/."+formattedTotal);
+        updateBtnMinus(orderDetail.getQuantity(),orderDetail,holder);
+        holder.binding.btnPlus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int quantityCurrent=orderDetail.getQuantity();
+                quantityCurrent++;
+                orderDetailList.get(position).setQuantity(quantityCurrent);
+                notifyDataSetChanged();
+                holder.binding.txtQuantity.setText(String.valueOf(orderDetailList.get(position).getQuantity()));
+            }
+        });
+        holder.binding.btnMinus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(orderDetail.getQuantityReceivedForDispatchArea()==0){
+                    int quantityCurrent=orderDetail.getQuantity();
+                    if(quantityCurrent>(orderDetail.getQuantityReceivedForDispatchArea()+1)){
+                        quantityCurrent--;
+                        orderDetailList.get(position).setQuantity(quantityCurrent);
+                        notifyDataSetChanged();
+                        holder.binding.txtQuantity.setText(String.valueOf(orderDetailList.get(position).getQuantity()));
+                        updateBtnMinus(quantityCurrent,orderDetail,holder);
+                    }else{
+                        if(quantityCurrent==(orderDetail.getQuantityReceivedForDispatchArea()+1)){
+                            if(orderDetailList.get(position).getId()==null){
+                                Toast.makeText(context, "Enviamos un mensaje donde indica que se va a eliminar del cache", Toast.LENGTH_SHORT).show();
+                            }else{
+                                Toast.makeText(context, "Enviamos un mensaje donde indica que se va a eliminar el objeto detail de la base de datos", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+                }
+            }
+        });
     }
-
+    private void updateBtnMinus(int quantityCurrent,OrderDetail dt,@NonNull OrderDetailAdapter.ViewHolder holder){
+        if(quantityCurrent==(dt.getQuantityReceivedForDispatchArea()+1)){
+            holder.binding.btnMinus.setImageResource(R.drawable.baseline_delete_outline_24);
+        }else{
+            holder.binding.btnMinus.setImageResource(R.drawable.baseline_remove_24);
+        }
+    }
     @Override
     public int getItemCount() {
         return orderDetailList.size();
