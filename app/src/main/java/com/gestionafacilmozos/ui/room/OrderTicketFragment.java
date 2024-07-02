@@ -17,7 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.gestionafacilmozos.MainActivity;
 import com.gestionafacilmozos.R;
-import com.gestionafacilmozos.adapters.OrderDetailAdapter;
+import com.gestionafacilmozos.adapters.ComandaDetailsAdapter;
 import com.gestionafacilmozos.api.models.Order;
 import com.gestionafacilmozos.api.models.OrderDetail;
 import com.gestionafacilmozos.api.models.Table;
@@ -28,12 +28,17 @@ import com.gestionafacilmozos.databinding.LayoutOrderTicketLoadingBinding;
 import com.gestionafacilmozos.repositories.OrderRepository;
 import com.gestionafacilmozos.repositories.ResultCallback;
 import com.google.gson.Gson;
+
 import java.util.List;
 public class OrderTicketFragment extends Fragment {
+    private Order comanda;
     private Table tableSelected;
     private FragmentOrderTicketBinding binding;
     private LayoutOrderTicketLoadingBinding layoutOrderTicketLoadingBinding;
     private LayoutReviewToPayBinding layoutReviewToPayBinding;
+    public OrderTicketFragment(){
+        this.comanda=new Order();
+    }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,7 +68,9 @@ public class OrderTicketFragment extends Fragment {
             @Override
             public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
                 if (menuItem.getItemId() == R.id.action_add) {
-                    Navigation.findNavController(view).navigate(R.id.action_navigation_order_ticket_to_menuItemsFragment);
+                    Bundle bundle=new Bundle();
+                    bundle.putString("comanda",new Gson().toJson(comanda));
+                    Navigation.findNavController(view).navigate(R.id.action_navigation_order_ticket_to_menuItemsFragment,bundle);
                     return true;
                 }
                 return false;
@@ -78,10 +85,11 @@ public class OrderTicketFragment extends Fragment {
         orderRepository.getOrderInfo(MainActivity.getToken(), tableSelected.getOrderIdAssocied(), new ResultCallback.OrderInfo() {
             @Override
             public void onSuccess(Order order) {
+                comanda=order;
                 layoutOrderTicketLoadingBinding.shimmerContentOrdenTicket.stopShimmer();
                 layoutOrderTicketLoadingBinding.shimmerContentOrdenTicket.setVisibility(View.GONE);
-                List<OrderDetail> orderDetailListFromServer=order.getDetails();
-                if(orderDetailListFromServer.size()>0){
+                List<OrderDetail> orderDetailList=order.getDetails();
+                if(orderDetailList.size()>0){
                     binding.txtTotalRegister.setVisibility(View.GONE);
                     layoutReviewToPayBinding.content.setVisibility(View.VISIBLE);
                 }else{
@@ -90,7 +98,7 @@ public class OrderTicketFragment extends Fragment {
                 }
                 GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 1);
                 binding.recycler.setLayoutManager(layoutManager);
-                OrderDetailAdapter adapter=new OrderDetailAdapter(orderDetailListFromServer,getContext());
+                ComandaDetailsAdapter adapter=new ComandaDetailsAdapter(comanda,getContext());
                 binding.recycler.setAdapter(adapter);
                 binding.recycler.setHasFixedSize(true);
                 binding.recycler.setNestedScrollingEnabled(true);
