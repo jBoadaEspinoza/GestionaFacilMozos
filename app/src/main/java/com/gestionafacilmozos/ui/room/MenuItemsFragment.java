@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Lifecycle;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,11 +23,13 @@ import com.gestionafacilmozos.MainActivity;
 import com.gestionafacilmozos.R;
 import com.gestionafacilmozos.adapters.MenuItemAdapter;
 import com.gestionafacilmozos.api.models.MenuItem;
+import com.gestionafacilmozos.api.models.Order;
 import com.gestionafacilmozos.api.models.OrderDetail;
 import com.gestionafacilmozos.api.models.Table;
 import com.gestionafacilmozos.api.responses.ErrorResponse;
 import com.gestionafacilmozos.databinding.FragmentMenuItemsBinding;
 import com.gestionafacilmozos.databinding.LayoutMenuItemsLoadingBinding;
+import com.gestionafacilmozos.interfaces.OnBackPressedListener;
 import com.gestionafacilmozos.repositories.MenuItemRepository;
 import com.gestionafacilmozos.repositories.ResultCallback;
 import com.google.gson.Gson;
@@ -35,7 +38,8 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.List;
 
-public class MenuItemsFragment extends Fragment {
+public class MenuItemsFragment extends Fragment implements OnBackPressedListener {
+    private Table tableSelected;
     private android.view.MenuItem searchItem;
     private GridLayoutManager layoutManager;
     private LayoutMenuItemsLoadingBinding layoutMenuItemsLoadingBinding;
@@ -49,15 +53,16 @@ public class MenuItemsFragment extends Fragment {
     private String denomination="";
     private FragmentMenuItemsBinding binding;
 
-    private List<OrderDetail> comanda;
+    private Order comanda;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            String jsonOrderDetailList = getArguments().getString("orderDetailList");
-            Type listType=new TypeToken<List<OrderDetail>>() {}.getType();
-            comanda=new Gson().fromJson(jsonOrderDetailList,listType);
+            String jsonTable=getArguments().getString("table");
+            tableSelected=new Gson().fromJson(jsonTable,Table.class);
+            String jsonOrderDetailList = getArguments().getString("comanda");
+            comanda=new Gson().fromJson(jsonOrderDetailList,Order.class);
         }
     }
 
@@ -66,7 +71,6 @@ public class MenuItemsFragment extends Fragment {
                              Bundle savedInstanceState) {
         binding=FragmentMenuItemsBinding.inflate(inflater,container,false);
         layoutMenuItemsLoadingBinding=LayoutMenuItemsLoadingBinding.bind(binding.shimmerLoading.getRoot());
-
         return binding.getRoot();
     }
     @Override
@@ -99,6 +103,12 @@ public class MenuItemsFragment extends Fragment {
             }
             @Override
             public boolean onMenuItemSelected(@NonNull android.view.MenuItem menuItem) {
+                if(menuItem.getItemId() == android.R.id.home){
+                    Bundle bundle=new Bundle();
+                    bundle.putString("oTable",new Gson().toJson(tableSelected));
+                    Navigation.findNavController(getView()).navigate(R.id.action_navigation_menu_items_to_navigation_order_ticket,bundle);
+                    return true;
+                }
                 return false;
             }
         },getViewLifecycleOwner(), Lifecycle.State.RESUMED);
@@ -106,7 +116,6 @@ public class MenuItemsFragment extends Fragment {
     private void initialize(){
         layoutManager=new GridLayoutManager(getContext(),1);
         binding.recycler.setLayoutManager(layoutManager);
-        Log.d("hola",new Gson().toJson(comanda));
         adapter=new MenuItemAdapter(getContext(),comanda);
         binding.recycler.setAdapter(adapter);
         binding.recycler.setHasFixedSize(true);
@@ -163,5 +172,11 @@ public class MenuItemsFragment extends Fragment {
         if (searchItem != null) {
             searchItem.collapseActionView();
         }
+    }
+    @Override
+    public void onBackPressed() {
+        Bundle bundle=new Bundle();
+        bundle.putString("oTable",new Gson().toJson(tableSelected));
+        Navigation.findNavController(getView()).navigate(R.id.action_navigation_menu_items_to_navigation_order_ticket,bundle);
     }
 }

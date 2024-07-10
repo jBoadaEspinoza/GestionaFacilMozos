@@ -10,12 +10,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderDetail {
-    private String id;
+    private String id=null;
     @SerializedName("menu_item")
     private MenuItem menuItem;
-    private int quantity;
+    private int quantity=0;
     @SerializedName("unit_price")
-    private double unitPrice;
+    private double unitPrice=0;
     @SerializedName("quantity_received_for_dispatch_area")
     private int quantityReceivedForDispatchArea;
 }

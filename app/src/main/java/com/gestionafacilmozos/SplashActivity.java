@@ -1,17 +1,21 @@
 package com.gestionafacilmozos;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.gestionafacilmozos.api.models.MenuItem;
 import com.gestionafacilmozos.api.models.User;
 import com.gestionafacilmozos.api.requests.LoginRequest;
 import com.gestionafacilmozos.api.responses.ErrorResponse;
@@ -48,14 +52,13 @@ public class SplashActivity extends AppCompatActivity {
         };
         startAnimation();
 
-        userRepository = new UserRepository();
+        userRepository = new UserRepository(getBaseContext());
         sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
 
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 String token = getToken();
-
                 if(token!=null){
                     connectUsingToken(token);
                 }else{
@@ -70,16 +73,36 @@ public class SplashActivity extends AppCompatActivity {
             public void onSuccess(User user) {
                 openActivity(MainActivity.class);
             }
-
             @Override
             public void onError(ErrorResponse errorMessage) {
-                if(errorMessage.getFrom().equals("server")){
-                    openActivity(LoginActivity.class);
-                }else{
-                    Toast.makeText(getBaseContext(),errorMessage.getMessage(),Toast.LENGTH_LONG).show();
-                }
+                runOnUiThread(() -> {
+                    if (errorMessage.getFrom().equals("server")) {
+                        switch (errorMessage.getCode()) {
+                            case "invalid_token":
+                                openActivity(LoginActivity.class);
+                                break;
+                        }
+                    } else {
+                        if (errorMessage.getCode().equals("no_internet_connection")) {
+                            if (!isFinishing()) { showAlert(errorMessage.getCode(),errorMessage.getMessage(),"Reintentar"); }
+                        } else {
+                            showAlert("Error del sistema",errorMessage.getMessage(),"Ok");
+                        }
+                    }
+                });
             }
         });
+    }
+    private void showAlert(String title,String message,String buttonTitle){
+        AlertDialog alertDialog=new AlertDialog.Builder(SplashActivity.this)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton(buttonTitle, (dialog, which) -> {recreate();}).create();
+        alertDialog.setOnShowListener(dialog->{
+            Button positiveButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+            positiveButton.setTextColor(ContextCompat.getColor(SplashActivity.this, R.color.crimson_700));
+        });
+        alertDialog.show();
     }
     private String getToken(){
         String token=sharedPreferences.getString("token", null);

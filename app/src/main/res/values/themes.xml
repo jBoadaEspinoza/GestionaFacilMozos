@@ -31,4 +31,16 @@
         <item name="android:windowActionBar">false</item>
         <item name="android:statusBarColor">@color/crimson_700</item>
     </style>
+    <style name="FullScreenDialogStyle" parent="Theme.AppCompat.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
+    <style name="WhiteProgressBar" parent="Widget.AppCompat.ProgressBar">
+        <item name="android:indeterminateTint">@android:color/white</item>
+    </style>
+    <style name="AlertDialogButtonStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorAccent">@color/crimson_700</item>
+    </style>
 </resources>

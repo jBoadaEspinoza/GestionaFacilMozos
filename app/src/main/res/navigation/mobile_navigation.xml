@@ -35,10 +35,17 @@
         <action
             android:id="@+id/action_navigation_order_ticket_to_menuItemsFragment"
             app:destination="@id/navigation_menu_items" />
+        <action
+            android:id="@+id/action_navigation_order_ticket_to_navigation_room"
+            app:destination="@id/navigation_room" />
     </fragment>
     <fragment
         android:id="@+id/navigation_menu_items"
         android:name="com.gestionafacilmozos.ui.room.MenuItemsFragment"
         android:label="@string/title_buscar_menu_items"
-        tools:layout="@layout/fragment_menu_items" />
+        tools:layout="@layout/fragment_menu_items" >
+        <action
+            android:id="@+id/action_navigation_menu_items_to_navigation_order_ticket"
+            app:destination="@id/navigation_order_ticket" />
+    </fragment>
 </navigation>

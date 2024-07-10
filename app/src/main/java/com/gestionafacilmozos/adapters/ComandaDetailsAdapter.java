@@ -1,5 +1,6 @@
 package com.gestionafacilmozos.adapters;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,21 +11,33 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.gestionafacilmozos.MainActivity;
 import com.gestionafacilmozos.R;
 import com.gestionafacilmozos.api.models.MenuItem;
 import com.gestionafacilmozos.api.models.Order;
 import com.gestionafacilmozos.api.models.OrderDetail;
+import com.gestionafacilmozos.api.responses.ErrorResponse;
 import com.gestionafacilmozos.databinding.ItemOrderDetailBinding;
+import com.gestionafacilmozos.repositories.OrderDetailRepository;
+import com.gestionafacilmozos.repositories.ResultCallback;
+import com.gestionafacilmozos.utilities.LoadingDialogFragment;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class ComandaDetailsAdapter extends RecyclerView.Adapter<ComandaDetailsAdapter.ViewHolder>{
     private Order comanda;
+    private OrderDetailRepository orderDetailRepository;
     private Context context;
-    public ComandaDetailsAdapter(Order order, Context context) {
+    private Runnable onQuantityChangedCallback;
+    public ComandaDetailsAdapter(Order order, Context context, Runnable onQuantityChangedCallback) {
         this.comanda = order;
         this.context = context;
+        this.orderDetailRepository=new OrderDetailRepository();
+        this.onQuantityChangedCallback = onQuantityChangedCallback;
     }
     @NonNull
     @Override
@@ -32,7 +45,6 @@ public class ComandaDetailsAdapter extends RecyclerView.Adapter<ComandaDetailsAd
         ItemOrderDetailBinding itemOrderDetailBinding=ItemOrderDetailBinding.inflate(LayoutInflater.from(parent.getContext()),parent,false);
         return new ViewHolder(itemOrderDetailBinding);
     }
-
     @Override
     public void onBindViewHolder(@NonNull ComandaDetailsAdapter.ViewHolder holder, int position) {
         List<OrderDetail> details = comanda.getDetails();
@@ -44,10 +56,9 @@ public class ComandaDetailsAdapter extends RecyclerView.Adapter<ComandaDetailsAd
         holder.binding.btnPlus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                OrderDetail item=comanda.getDetails().get(position);
                 int quantity=item.getQuantity()+1;
-                comanda.getDetails().get(position).setQuantity(quantity);
-                OrderDetail newItem=comanda.getDetails().get(position);
-                updateControls(holder,newItem);
+                updateOrderDetailQuantity(holder,item,quantity);
             }
         });
         holder.binding.btnMinus.setOnClickListener(new View.OnClickListener() {
@@ -56,23 +67,71 @@ public class ComandaDetailsAdapter extends RecyclerView.Adapter<ComandaDetailsAd
                 int quantity=item.getQuantity()-1;
                 if(item.getQuantityReceivedForDispatchArea()==0){
                     if(quantity>0){
-                        comanda.getDetails().get(position).setQuantity(quantity);
-                        OrderDetail newItem=comanda.getDetails().get(position);
-                        updateControls(holder,newItem);
+                        updateOrderDetailQuantity(holder,item,quantity);
                     }else{
-                        Toast.makeText(context,"Se eliminara el item seleccionado",Toast.LENGTH_SHORT).show();
-                        comanda.getDetails().remove(position);
-                        notifyDataSetChanged();
+                        showExitConfirmationDialog(holder,item);
                     }
                 }else{
                     if(quantity>item.getQuantityReceivedForDispatchArea()){
-                        comanda.getDetails().get(position).setQuantity(quantity);
                         OrderDetail newItem=comanda.getDetails().get(position);
-                        updateControls(holder,newItem);
+                        updateOrderDetailQuantity(holder,newItem,quantity);
                     }else{
-                        Toast.makeText(context,"No se puede quitar mas elementos porque ya han sido recibido por el area de despacho",Toast.LENGTH_SHORT).show();
+                        alertMessage(item);
                     }
                 }
+            }
+        });
+    }
+    private void alertMessage(OrderDetail item) {
+        new AlertDialog.Builder(context)
+                .setTitle("No puedes eliminar el registro:")
+                .setMessage("El registro "+item.getMenuItem().getDenomination()+" se encuentra en area de despacho")
+                .setPositiveButton("Aceptar", null)
+                .show();
+    }
+    private void showExitConfirmationDialog(ViewHolder holder, OrderDetail item) {
+        new AlertDialog.Builder(context)
+                .setTitle("Confirmar acción:")
+                .setMessage("¿Esta seguro que desea eliminar el registro "+item.getMenuItem().getDenomination()+"?")
+                .setPositiveButton("Si", (dialog, which) -> removeMenuItem(holder,item))
+                .setNegativeButton("No", null)
+                .show();
+    }
+    private void removeMenuItem(ViewHolder holder, OrderDetail item) {
+        int index=getOrderDetailIndex(item.getMenuItem()).orElse(-1);
+        OrderDetail orderDetailToRemove=comanda.getDetails().get(index);
+        LoadingDialogFragment loading = new LoadingDialogFragment("Eliminando registro...");
+        loading.show(((MainActivity) context).getSupportFragmentManager(), "loading");
+        orderDetailRepository.deleteOrderDetail(MainActivity.getToken(), orderDetailToRemove.getId(), new ResultCallback.Result() {
+            @Override
+            public void onSuccess(boolean success, String message) {
+                loading.dismiss();
+                comanda.getDetails().remove(index);
+                notifyDataSetChanged();
+                onQuantityChangedCallback.run();
+            }
+            @Override
+            public void onError(ErrorResponse errorResponse) {
+
+            }
+        });
+    }
+    private void updateOrderDetailQuantity(ViewHolder holder, OrderDetail item, int quantity) {
+        LoadingDialogFragment loading = new LoadingDialogFragment("Actualizando registro...");
+        loading.show(((MainActivity) context).getSupportFragmentManager(), "loading");
+        orderDetailRepository.updateQuantityOfOrderDetail(MainActivity.getToken(), item.getId(), quantity, new ResultCallback.Result() {
+            @Override
+            public void onSuccess(boolean success, String message) {
+                loading.dismiss();
+                int index=getOrderDetailIndex(item.getMenuItem()).orElse(-1);
+                comanda.getDetails().get(index).setQuantity(quantity);
+                notifyDataSetChanged();
+                updateControls(holder,item);
+                onQuantityChangedCallback.run();
+            }
+            @Override
+            public void onError(ErrorResponse errorResponse) {
+
             }
         });
     }
@@ -102,6 +161,13 @@ public class ComandaDetailsAdapter extends RecyclerView.Adapter<ComandaDetailsAd
     }
     private String getAmountFormatted(double unitprice,int quantity){
         return "S/."+String.format(Locale.getDefault(), "%.2f", unitprice*quantity);
+    }
+    private Optional<Integer> getOrderDetailIndex(MenuItem item) {
+        return Optional.of(comanda.getDetails().stream()
+                .map(OrderDetail::getMenuItem)
+                .map(MenuItem::getId)
+                .collect(Collectors.toList())
+                .indexOf(item.getId()));
     }
     public class ViewHolder extends RecyclerView.ViewHolder{
         private ItemOrderDetailBinding binding;

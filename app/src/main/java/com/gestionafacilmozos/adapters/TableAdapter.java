@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.gestionafacilmozos.R;
 import com.gestionafacilmozos.api.models.Table;
 import com.gestionafacilmozos.databinding.ItemTableBinding;
+import com.gestionafacilmozos.databinding.LayoutRoomLoadingBinding;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -20,7 +21,6 @@ import java.util.List;
 
 public class TableAdapter extends RecyclerView.Adapter<TableAdapter.ViewHolder> {
     private List<Table> listTable;
-
     public TableAdapter() {
         this.listTable = new ArrayList<>();
     }

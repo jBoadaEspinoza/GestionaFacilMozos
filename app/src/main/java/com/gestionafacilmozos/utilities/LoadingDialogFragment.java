@@ -1,4 +1,5 @@
 package com.gestionafacilmozos.utilities;
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +12,9 @@ import com.gestionafacilmozos.databinding.FragmentLoadingDialogBinding;
 public class LoadingDialogFragment extends DialogFragment {
     private FragmentLoadingDialogBinding binding;
     private String title;
+    @SuppressLint("ResourceType")
     public LoadingDialogFragment(String title){
+        super(R.style.FullScreenDialogStyle);
         this.title=title;
     }
     @Nullable
@@ -42,12 +45,6 @@ public class LoadingDialogFragment extends DialogFragment {
         if(getDialog() != null){
             getDialog().setCancelable(false);
             getDialog().setCanceledOnTouchOutside(false);
-        }
-    }
-
-    public void dismiss() {
-        if (getDialog() != null) {
-            dismiss();
         }
     }
 }

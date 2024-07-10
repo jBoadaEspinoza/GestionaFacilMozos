@@ -2,6 +2,7 @@ package com.gestionafacilmozos.repositories;
 
 import com.gestionafacilmozos.api.models.MenuItem;
 import com.gestionafacilmozos.api.models.Order;
+import com.gestionafacilmozos.api.models.OrderDetail;
 import com.gestionafacilmozos.api.models.Table;
 import com.gestionafacilmozos.api.models.User;
 import com.gestionafacilmozos.api.responses.ErrorResponse;
@@ -29,8 +30,22 @@ public interface ResultCallback {
         void onError(ErrorResponse errorResponse);
     }
 
+    interface OrderCreate{
+        void onSuccess(Order order);
+        void onError(ErrorResponse errorResponse);
+    }
+
     interface ListMenuItemData{
         void onSuccess(List<MenuItem> data);
         void onError(ErrorResponse errorResponse);
     }
+    interface OrderDetailCreate{
+        void onSuccess(OrderDetail orderDetail);
+        void onError(ErrorResponse errorResponse);
+    }
+    interface Result{
+        void onSuccess(boolean success,String message);
+        void onError(ErrorResponse errorResponse);
+    }
+
 }

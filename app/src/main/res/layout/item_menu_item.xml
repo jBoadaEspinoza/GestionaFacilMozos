@@ -58,7 +58,6 @@
                     android:id="@+id/btnMinus"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:visibility="gone"
                     android:background="@drawable/button_circular_selector"
                     android:src="@drawable/baseline_remove_24"/>
                 <TextView
@@ -66,8 +65,7 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:textSize="17dp"
-                    android:text="1"
-                    android:visibility="gone"
+                    android:text="0"
                     android:textStyle="bold"
                     android:fontFamily="@font/quicksand_regular"
                     android:layout_gravity="center_vertical"

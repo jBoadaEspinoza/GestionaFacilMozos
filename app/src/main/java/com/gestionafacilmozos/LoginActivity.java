@@ -2,6 +2,7 @@ package com.gestionafacilmozos;
 
 import static java.security.AccessController.getContext;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -12,11 +13,13 @@ import android.text.SpannableStringBuilder;
 import android.text.TextWatcher;
 import android.text.style.LeadingMarginSpan;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -33,7 +36,7 @@ public class LoginActivity extends AppCompatActivity {
     private LoadingDialogFragment loading;
     private UserRepository userRepository;
     public LoginActivity(){
-        userRepository=new UserRepository();
+        userRepository=new UserRepository(this);
     }
 
     @Override
@@ -59,8 +62,8 @@ public class LoginActivity extends AppCompatActivity {
                     binding.txtUserName.getText().toString(),
                     binding.txtPassword.getText().toString()
             );
-            loading=new LoadingDialogFragment("Validando usuario");
-            loading.onStart();
+            loading = new LoadingDialogFragment("Validando usuario...");
+            loading.show(getSupportFragmentManager(), "loading");
             userRepository.login(request, new ResultCallback.Login() {
                 @Override
                 public void onSuccess(String token) {
@@ -68,13 +71,36 @@ public class LoginActivity extends AppCompatActivity {
                     loading.dismiss();
                     openActivity(MainActivity.class);
                 }
-
                 @Override
                 public void onError(ErrorResponse errorMessage) {
-                    Toast.makeText(LoginActivity.this,errorMessage.getMessage(),Toast.LENGTH_LONG);
+                    loading.dismiss();
+                    runOnUiThread(() -> {
+                        if (errorMessage.getFrom().equals("server")) {
+                            showAlert(errorMessage.getCode(),errorMessage.getMessage(),"Aceptar");
+                        } else {
+                            if (errorMessage.getCode().equals("no_internet_connection")) {
+                                if (!isFinishing()) {
+                                    showAlert(errorMessage.getCode(),errorMessage.getMessage(),"Reintentar");
+                                }
+                            } else {
+                                showAlert("Error del sistema",errorMessage.getMessage(),"Ok");
+                            }
+                        }
+                    });
                 }
             });
         });
+    }
+    private void showAlert(String title,String message,String buttonTitle){
+        AlertDialog alertDialog=new AlertDialog.Builder(LoginActivity.this)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton(buttonTitle, (dialog, which) -> {recreate();}).create();
+        alertDialog.setOnShowListener(dialog->{
+            Button positiveButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+            positiveButton.setTextColor(ContextCompat.getColor(LoginActivity.this, R.color.crimson_700));
+        });
+        alertDialog.show();
     }
     private void setHintWithPadding(View view, String hint) {
         SpannableString spannableString = new SpannableString(hint);
