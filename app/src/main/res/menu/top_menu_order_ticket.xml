@@ -5,6 +5,7 @@
         android:id="@+id/action_send_order"
         android:icon="@drawable/baseline_send_24"
         android:title="Enviar ordenes a area de despacho"
+        android:visible="false"
         app:showAsAction="always" />
     <item
         android:id="@+id/action_add"

@@ -80,7 +80,7 @@ public class MenuItemAdapter extends RecyclerView.Adapter<MenuItemAdapter.ViewHo
                 OrderDetail detail=getOrderDetailAdded(menuItem).orElse(null);
                 int quantity=detail.getQuantity()-1;
                 if(quantity>0){
-                    if(quantity>detail.getQuantityReceivedForDispatchArea()){
+                    if((quantity+1)>detail.getQuantityReceivedForDispatchArea()){
                         updateQuantity(holder,detail,quantity);
                     }else{
                         alertMessage(menuItem);

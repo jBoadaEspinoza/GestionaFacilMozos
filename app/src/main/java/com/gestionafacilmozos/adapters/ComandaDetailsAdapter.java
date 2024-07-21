@@ -18,6 +18,7 @@ import com.gestionafacilmozos.api.models.Order;
 import com.gestionafacilmozos.api.models.OrderDetail;
 import com.gestionafacilmozos.api.responses.ErrorResponse;
 import com.gestionafacilmozos.databinding.ItemOrderDetailBinding;
+import com.gestionafacilmozos.repositories.DispatchAreaRepository;
 import com.gestionafacilmozos.repositories.OrderDetailRepository;
 import com.gestionafacilmozos.repositories.ResultCallback;
 import com.gestionafacilmozos.utilities.LoadingDialogFragment;
@@ -31,12 +32,14 @@ import java.util.stream.Collectors;
 public class ComandaDetailsAdapter extends RecyclerView.Adapter<ComandaDetailsAdapter.ViewHolder>{
     private Order comanda;
     private OrderDetailRepository orderDetailRepository;
+    private DispatchAreaRepository dispatchAreaRepository;
     private Context context;
     private Runnable onQuantityChangedCallback;
     public ComandaDetailsAdapter(Order order, Context context, Runnable onQuantityChangedCallback) {
         this.comanda = order;
         this.context = context;
         this.orderDetailRepository=new OrderDetailRepository();
+        this.dispatchAreaRepository=new DispatchAreaRepository(context);
         this.onQuantityChangedCallback = onQuantityChangedCallback;
     }
     @NonNull
@@ -58,7 +61,7 @@ public class ComandaDetailsAdapter extends RecyclerView.Adapter<ComandaDetailsAd
             public void onClick(View view) {
                 OrderDetail item=comanda.getDetails().get(position);
                 int quantity=item.getQuantity()+1;
-                updateOrderDetailQuantity(holder,item,quantity);
+                updateOrderDetailQuantity(holder,item,quantity,false);
             }
         });
         holder.binding.btnMinus.setOnClickListener(new View.OnClickListener() {
@@ -67,14 +70,14 @@ public class ComandaDetailsAdapter extends RecyclerView.Adapter<ComandaDetailsAd
                 int quantity=item.getQuantity()-1;
                 if(item.getQuantityReceivedForDispatchArea()==0){
                     if(quantity>0){
-                        updateOrderDetailQuantity(holder,item,quantity);
+                        updateOrderDetailQuantity(holder,item,quantity,true);
                     }else{
                         showExitConfirmationDialog(holder,item);
                     }
                 }else{
-                    if(quantity>item.getQuantityReceivedForDispatchArea()){
+                    if((quantity+1)>item.getQuantityReceivedForDispatchArea()){
                         OrderDetail newItem=comanda.getDetails().get(position);
-                        updateOrderDetailQuantity(holder,newItem,quantity);
+                        updateOrderDetailQuantity(holder,newItem,quantity,true);
                     }else{
                         alertMessage(item);
                     }
@@ -102,6 +105,7 @@ public class ComandaDetailsAdapter extends RecyclerView.Adapter<ComandaDetailsAd
         OrderDetail orderDetailToRemove=comanda.getDetails().get(index);
         LoadingDialogFragment loading = new LoadingDialogFragment("Eliminando registro...");
         loading.show(((MainActivity) context).getSupportFragmentManager(), "loading");
+
         orderDetailRepository.deleteOrderDetail(MainActivity.getToken(), orderDetailToRemove.getId(), new ResultCallback.Result() {
             @Override
             public void onSuccess(boolean success, String message) {
@@ -116,18 +120,37 @@ public class ComandaDetailsAdapter extends RecyclerView.Adapter<ComandaDetailsAd
             }
         });
     }
-    private void updateOrderDetailQuantity(ViewHolder holder, OrderDetail item, int quantity) {
+    private void updateOrderDetailQuantity(ViewHolder holder, OrderDetail item, int quantity,boolean btnMinus) {
         LoadingDialogFragment loading = new LoadingDialogFragment("Actualizando registro...");
         loading.show(((MainActivity) context).getSupportFragmentManager(), "loading");
         orderDetailRepository.updateQuantityOfOrderDetail(MainActivity.getToken(), item.getId(), quantity, new ResultCallback.Result() {
             @Override
             public void onSuccess(boolean success, String message) {
-                loading.dismiss();
-                int index=getOrderDetailIndex(item.getMenuItem()).orElse(-1);
-                comanda.getDetails().get(index).setQuantity(quantity);
-                notifyDataSetChanged();
-                updateControls(holder,item);
-                onQuantityChangedCallback.run();
+                if(btnMinus){
+                    dispatchAreaRepository.deleteDispatchAreaByOrderDetailIdAndStateId(MainActivity.getToken(), item.getId(), 1L, 1, new ResultCallback.DispatchAreaDelete() {
+                        @Override
+                        public void onSuccess(Long num_items_affected) {
+                            loading.dismiss();
+                            int index=getOrderDetailIndex(item.getMenuItem()).orElse(-1);
+                            comanda.getDetails().get(index).setQuantity(quantity);
+                            notifyDataSetChanged();
+                            updateControls(holder,item);
+                            onQuantityChangedCallback.run();
+                        }
+                        @Override
+                        public void onError(ErrorResponse errorResponse) {
+
+                        }
+                    });
+                }else{
+                    loading.dismiss();
+                    int index=getOrderDetailIndex(item.getMenuItem()).orElse(-1);
+                    comanda.getDetails().get(index).setQuantity(quantity);
+                    notifyDataSetChanged();
+                    updateControls(holder,item);
+                    onQuantityChangedCallback.run();
+                }
+
             }
             @Override
             public void onError(ErrorResponse errorResponse) {

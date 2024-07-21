@@ -10,6 +10,10 @@ import com.gestionafacilmozos.api.responses.ErrorResponse;
 import java.util.List;
 
 public interface ResultCallback {
+    interface Result{
+        void onSuccess(boolean success,String message);
+        void onError(ErrorResponse errorResponse);
+    }
     interface Login{
         void onSuccess(String token);
         void onError(ErrorResponse errorResponse);
@@ -22,19 +26,15 @@ public interface ResultCallback {
     interface ListTableData{
         void onSuccess(List<Table> data);
         void onError(ErrorResponse errorResponse);
-
     }
-
     interface OrderInfo{
         void onSuccess(Order order);
         void onError(ErrorResponse errorResponse);
     }
-
     interface OrderCreate{
         void onSuccess(Order order);
         void onError(ErrorResponse errorResponse);
     }
-
     interface ListMenuItemData{
         void onSuccess(List<MenuItem> data);
         void onError(ErrorResponse errorResponse);
@@ -43,9 +43,16 @@ public interface ResultCallback {
         void onSuccess(OrderDetail orderDetail);
         void onError(ErrorResponse errorResponse);
     }
-    interface Result{
-        void onSuccess(boolean success,String message);
+    interface DispatchArea{
+        void onSuccess(Long num_items_registered);
         void onError(ErrorResponse errorResponse);
     }
-
+    interface DispatchAreaAdd{
+        void onSuccess(Long num_items_added,Long num_items_registered);
+        void onError(ErrorResponse errorResponse);
+    }
+    interface DispatchAreaDelete{
+        void onSuccess(Long num_items_affected);
+        void onError(ErrorResponse errorResponse);
+    }
 }
